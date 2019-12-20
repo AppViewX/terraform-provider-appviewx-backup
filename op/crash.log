@@ -1,0 +1,61 @@
+2019/12/16 18:40:04 [INFO] Terraform version: 0.12.16  
+2019/12/16 18:40:04 [INFO] Go runtime version: go1.12.13
+2019/12/16 18:40:04 [INFO] CLI args: []string{"/data/SOFTWARES/terraform/terraform", "apply"}
+2019/12/16 18:40:04 [DEBUG] Attempting to open CLI config file: /home/gopal.m/.terraformrc
+2019/12/16 18:40:04 [DEBUG] File doesn't exist, but doesn't need to. Ignoring.
+2019/12/16 18:40:04 [DEBUG] checking for credentials in "/home/gopal.m/.terraform.d/plugins"
+2019/12/16 18:40:04 [DEBUG] checking for credentials in "/home/gopal.m/.terraform.d/plugins/linux_amd64"
+2019/12/16 18:40:04 [INFO] CLI command args: []string{"apply"}
+panic: runtime error: index out of range
+
+goroutine 1 [running]:
+github.com/hashicorp/hcl/v2/json.(*peeker).Read(...)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/peeker.go:20
+github.com/hashicorp/hcl/v2/json.parseObject.func1(0x0, 0xc0000e24fd, 0x1, 0x3a0, 0xc0005be360, 0x11, 0x6, 0x14, 0x7d, 0x6, ...)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:127 +0xb0
+github.com/hashicorp/hcl/v2/json.parseObject(0xc000499fc0, 0xc0005b88a0, 0xc0005c0190, 0x0, 0x0, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:233 +0xcb2
+github.com/hashicorp/hcl/v2/json.parseValue(0xc000499fc0, 0xc0005b8840, 0x0, 0x0, 0x0, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:45 +0x70b
+github.com/hashicorp/hcl/v2/json.parseObject(0xc000499fc0, 0xc0005b86c0, 0xc0005c0140, 0x0, 0x0, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:188 +0x43c
+github.com/hashicorp/hcl/v2/json.parseValue(0xc000499fc0, 0xc0005b8660, 0x0, 0x0, 0x0, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:45 +0x70b
+github.com/hashicorp/hcl/v2/json.parseObject(0xc000499fc0, 0xc0005b84e0, 0xc0005c00f0, 0x0, 0x0, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:188 +0x43c
+github.com/hashicorp/hcl/v2/json.parseValue(0xc000499fc0, 0xc0005b8480, 0x0, 0x0, 0x0, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:45 +0x70b
+github.com/hashicorp/hcl/v2/json.parseObject(0xc000499fc0, 0xc0005b8300, 0xc0005be360, 0x11, 0x5, 0x14)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:188 +0x43c
+github.com/hashicorp/hcl/v2/json.parseValue(0xc000499fc0, 0xc000499fc0, 0x3ab, 0xc0005be360, 0x11, 0x6)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:45 +0x70b
+github.com/hashicorp/hcl/v2/json.parseFileContent(0xc0000e2480, 0x21d, 0x41d, 0xc0005be360, 0x11, 0x0, 0x0, 0xc0005b8240, 0x7fe6bf777918, 0x6)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/parser.go:21 +0x155
+github.com/hashicorp/hcl/v2/json.Parse(0xc0000e2480, 0x21d, 0x41d, 0xc0005be360, 0x11, 0xc0000e2480, 0x21d, 0x41d, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/json/public.go:21 +0x77
+github.com/hashicorp/hcl/v2/hclparse.(*Parser).ParseJSON(0xc0005bc010, 0xc0000e2480, 0x21d, 0x41d, 0xc0005be360, 0x11, 0x41d, 0x0, 0x0, 0xc0005373e0)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/hashicorp/hcl/v2@v2.0.0/hclparse/parser.go:91 +0xae
+github.com/hashicorp/terraform/configs.(*Parser).LoadHCLFile(0xc000499f40, 0xc0005be360, 0x11, 0xc0005be360, 0xc000537570, 0x11, 0x11, 0xc0005be360)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/configs/parser.go:66 +0xfa
+github.com/hashicorp/terraform/configs.(*Parser).loadConfigFile(0xc000499f40, 0xc0005be360, 0x11, 0x0, 0x1, 0x0, 0x0, 0x6)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/configs/parser_config.go:34 +0x5d
+github.com/hashicorp/terraform/configs.(*Parser).LoadConfigFile(...)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/configs/parser_config.go:22
+github.com/hashicorp/terraform/configs.(*Parser).loadFiles(0xc000499f40, 0xc0001da100, 0x1, 0x1, 0x0, 0x1, 0x0, 0x0, 0x0, 0x0, ...)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/configs/parser_config_dir.go:77 +0x343
+github.com/hashicorp/terraform/configs.(*Parser).LoadConfigDir(0xc000499f40, 0x1e2aacd, 0x1, 0x0, 0x1, 0x0, 0xc000537948)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/configs/parser_config_dir.go:37 +0x121
+github.com/hashicorp/terraform/command.(*Meta).loadSingleModule(0xc0005df880, 0x1e2aacd, 0x1, 0xc000537948, 0x18c2acc, 0xc0000ae8f0, 0x1)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/command/meta_config.go:113 +0x136
+github.com/hashicorp/terraform/command.(*Meta).loadBackendConfig(0xc0005df880, 0xc000044074, 0x65, 0x0, 0x0, 0x0, 0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/command/meta_config.go:175 +0x43
+github.com/hashicorp/terraform/command.(*ApplyCommand).Run(0xc0005df880, 0xc0000ac030, 0x0, 0x0, 0xc0005b2000)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/command/apply.go:132 +0x13a5
+github.com/mitchellh/cli.(*CLI).Run(0xc0005b4280, 0xc0005b4280, 0xc000537d90, 0x1)
+	/opt/teamcity-agent/work/9e329aa031982669/pkg/mod/github.com/mitchellh/cli@v1.0.0/cli.go:255 +0x1f1
+main.wrappedMain(0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/main.go:238 +0xc34
+main.realMain(0x0)
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/main.go:102 +0xb4
+main.main()
+	/opt/teamcity-agent/work/9e329aa031982669/src/github.com/hashicorp/terraform/main.go:38 +0x3b

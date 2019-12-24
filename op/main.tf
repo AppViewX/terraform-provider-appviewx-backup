@@ -34,3 +34,4 @@ resource "appviewx_stateless_api" "random-number-014" {
 	config_file = "./config.json"
 	master_payload ="./payload.json"
 }
+

@@ -33,7 +33,7 @@ func resourceServer() *schema.Resource {
 			},
 			"config_file": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 			"payload": &schema.Schema{
 				Type:     schema.TypeString,
@@ -45,11 +45,11 @@ func resourceServer() *schema.Resource {
 			},
 			"headers": &schema.Schema{
 				Type:     schema.TypeMap,
-				Required: true,
+				Optional: true,
 			},
 			"master_payload": &schema.Schema{
 				Type:     schema.TypeString,
-				Required: true,
+				Optional: true,
 			},
 		},
 	}
@@ -77,7 +77,10 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 
 	log.Println("*********************** Request received to create")
 
-	configFile := d.Get(constants.CONFIG_FILE).(string)
+	var configFile = d.Get(constants.CONFIG_FILE).(string)
+	if d.Get(constants.CONFIG_FILE) == "" {
+		configFile = "./config.json"
+	}
 	config.SyncConfigFile(configFile)
 
 	appviewxSessionID, err := GetSession()
@@ -91,7 +94,11 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 
 		actionID := d.Get(constants.APPVIEWX_ACTION_ID).(string)
 		payloadString := d.Get(constants.PAYLOAD).(string)
-		masterPayloadFileName := d.Get(constants.MASTER_PAYLOAD).(string)
+
+		var masterPayloadFileName = d.Get(constants.MASTER_PAYLOAD).(string)
+		if d.Get(constants.MASTER_PAYLOAD) == "" {
+			masterPayloadFileName = "./payload.json"
+		}
 
 		log.Println("Input minimal payload : ", payloadString)
 
@@ -99,6 +106,7 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		json.Unmarshal([]byte(payloadString), &payloadMinimal)
 
 		masterPayload := appviewx.GetMasterPayloadApplyingMinimalPayload(masterPayloadFileName, payloadMinimal)
+		log.Println("masterPayload : ", masterPayload)
 
 		outputFilePath := config.Config[constants.OUTPUT_FILE_PATH].(string)
 		appviewxEnvironmentIP := config.Config[constants.APPVIEWX_ENVIRONMENT_IP].(string)
@@ -113,7 +121,11 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 
 		url := appviewx.GetURL(appviewxEnvironmentIP, appviewxEnvironmentPort, actionID, queryParams, appviewxEnvironmentIsHTTPS)
 
-		headers := d.Get(constants.HEADERS).(map[string]interface{})
+		var headers = d.Get(constants.HEADERS).(map[string]interface{})
+		if len(headers) == 0 {
+			headers["Content-Type"] = "application/json"
+			headers["Accept"] = "application/json"
+		}
 
 		client := &http.Client{Transport: HTTPTransport()}
 		requestBody, _ := json.Marshal(masterPayload)

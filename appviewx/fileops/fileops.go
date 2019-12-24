@@ -9,9 +9,15 @@ import (
 
 func GetFileContentsInMap(fileName string) map[string]interface{} {
 	output := make(map[string]interface{})
+	log.Println("fileName : ", fileName)
+	if fileName == "" {
+		log.Println("File name is empty : ", fileName)
+		return output
+	}
 	masterFile, err := os.Open(fileName)
 	if err != nil {
-		log.Println("Error in opening the file")
+		log.Println("Error in opening the file : ", fileName)
+		return output
 	}
 	masterFileContents, err := ioutil.ReadAll(masterFile)
 	if err != nil {

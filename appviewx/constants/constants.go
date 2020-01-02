@@ -12,6 +12,7 @@ const (
 	CONFIG_FILE                    = "config_file"
 	APPVIEWX_ACTION_ID             = "action_id"
 	MASTER_PAYLOAD                 = "master_payload"
+	QUERY_PARAMS                   = "query_params"
 
 	ACCEPT   = "Accept"
 	USERNAME = "username"

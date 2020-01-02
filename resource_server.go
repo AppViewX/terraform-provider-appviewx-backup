@@ -27,28 +27,32 @@ func resourceServer() *schema.Resource {
 		Delete: resourceServerDelete,
 
 		Schema: map[string]*schema.Schema{
-			"action_id": &schema.Schema{
+			constants.APPVIEWX_ACTION_ID: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"config_file": &schema.Schema{
+			constants.CONFIG_FILE: &schema.Schema{
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			"payload": &schema.Schema{
+			constants.PAYLOAD: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"type": &schema.Schema{
+			constants.TYPE: &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"headers": &schema.Schema{
+			constants.HEADERS: &schema.Schema{
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
-			"master_payload": &schema.Schema{
+			constants.MASTER_PAYLOAD: &schema.Schema{
 				Type:     schema.TypeString,
+				Optional: true,
+			},
+			constants.QUERY_PARAMS: &schema.Schema{
+				Type:     schema.TypeMap,
 				Optional: true,
 			},
 		},
@@ -118,6 +122,11 @@ func resourceServerCreate(d *schema.ResourceData, m interface{}) error {
 		queryParams := make(map[string]string)
 		queryParams[constants.GW_KEY] = appviewxEnvironmentGwKey
 		queryParams[constants.GW_SOURCE] = appviewxEnvironmentGwSource
+
+		var queryParamReceived = d.Get(constants.QUERY_PARAMS).(map[string]interface{})
+		for k, v := range queryParamReceived {
+			queryParams[k] = v.(string)
+		}
 
 		url := appviewx.GetURL(appviewxEnvironmentIP, appviewxEnvironmentPort, actionID, queryParams, appviewxEnvironmentIsHTTPS)
 

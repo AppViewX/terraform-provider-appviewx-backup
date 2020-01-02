@@ -29,9 +29,11 @@ resource "appviewx_stateless_api" "random-number-014" {
 		"Content-Type":"application/json",
 		"Accept":"application/json"
 	}
+  query_params= {
+    "testQueryParamKey":"testQueryParamValue"
+  }
 	action_id= "certificate/create"
 	type=  "post"
 	config_file = "./config.json"
 	master_payload ="./payload.json"
 }
-

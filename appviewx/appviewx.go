@@ -24,6 +24,5 @@ func GetURL(ip, port, actionId string, queryParams map[string]string, isHttps bo
 
 func GetMasterPayloadApplyingMinimalPayload(masterPayloadFileName string, payloadMinimal map[string]interface{}) map[string]interface{} {
 	masterPayload := fileops.GetFileContentsInMap(masterPayloadFileName)
-	// return converter.GenerateNewMapUsingMasterAndUserInputMaps(masterPayload, payloadMinimal)
 	return *converter.GenerateNewMapUsingMasterAndUserInputMapsWithOutDot(&masterPayload, &payloadMinimal)
 }

@@ -11,13 +11,8 @@ import (
 
 func GenerateNewMapUsingMasterAndUserInputMaps(masterMap, userInputMap map[string]interface{}) map[string]interface{} {
 
-	// output := make(map[string]interface{})
-
 	for k, v := range userInputMap {
 		kSlice := strings.Split(k, ".")
-		// if len(k_slice) == 1 {
-		// 	masterMap[k] = v
-		// } else {
 		var requiredMap interface{} = masterMap
 		for i := 0; i < len(kSlice)-1; i++ {
 			n, err := strconv.Atoi(kSlice[i])
@@ -28,7 +23,6 @@ func GenerateNewMapUsingMasterAndUserInputMaps(masterMap, userInputMap map[strin
 			}
 		}
 		requiredMap.(map[string]interface{})[kSlice[len(kSlice)-1]] = v
-		// }
 	}
 	printMap(masterMap)
 	return masterMap

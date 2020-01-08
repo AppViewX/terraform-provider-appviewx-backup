@@ -48,8 +48,8 @@ func GenerateNewMapUsingMasterAndUserInputMapsWithOutDot(masterMap, userInputMap
 			continue
 		}
 
-		log.Println("reflect.ValueOf(v).String() : ", reflect.ValueOf(v).Type())
-		log.Println("reflect.ValueOf(masterMapValue).String() : ", reflect.ValueOf(masterMapValue).Type())
+		log.Println("[DEBUG] reflect.ValueOf(v).String() : ", reflect.ValueOf(v).Type())
+		log.Println("[DEBUG] reflect.ValueOf(masterMapValue).String() : ", reflect.ValueOf(masterMapValue).Type())
 
 		if fmt.Sprintf("%s", reflect.ValueOf(v).Type()) == "map[string]interface {}" &&
 			fmt.Sprintf("%s", reflect.ValueOf(masterMapValue).Type()) == "map[string]interface {}" {

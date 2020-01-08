@@ -57,19 +57,19 @@ func ResourceCertificateServer() *schema.Resource {
 	}
 }
 func resourceCertificateServerRead(d *schema.ResourceData, m interface{}) error {
-	log.Println(" **************** GET OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
+	log.Println("[INFO]  **************** GET OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
 	// Since the resource is for stateless operation, only nil returned
 	return nil
 }
 
 func resourceCertificateServerUpdate(d *schema.ResourceData, m interface{}) error {
-	log.Println(" **************** UPDATE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
+	log.Println("[INFO]  **************** UPDATE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
 	//Update implementation is empty since this resource is for the stateless generic api invocation
 	return errors.New("Update not supported")
 }
 
 func resourceCertificateServerDelete(d *schema.ResourceData, m interface{}) error {
-	log.Println(" **************** DELETE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
+	log.Println("[INFO]  **************** DELETE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
 	// Delete implementation is empty since this resoruce is for the stateless generic api invocation
 	return nil
 }
@@ -81,10 +81,10 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 
 	//
 	configAppViewXEnvironmentContent, _ := json.Marshal(configAppViewXEnvironment)
-	log.Println("configAppViewXEnvironmentContent : ", string(configAppViewXEnvironmentContent))
+	log.Println("[DEBUG] configAppViewXEnvironmentContent : ", string(configAppViewXEnvironmentContent))
 	//
 
-	log.Println("*********************** Request received to create")
+	log.Println("[INFO] *********************** Request received to create")
 	appviewxUserName := configAppViewXEnvironment.AppViewXUserName
 	appviewxPassword := configAppViewXEnvironment.AppViewXPassword
 	appviewxEnvironmentIP := configAppViewXEnvironment.AppViewXEnvironmentIP
@@ -94,7 +94,7 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 
 	appviewxSessionID, err := GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appviewxEnvironmentPort, appviewxGwSource, appviewxEnvironmentIsHTTPS)
 	if err != nil {
-		log.Println("Error in getting the session : ", err)
+		log.Println("[ERROR] Error in getting the session : ", err)
 		return err
 	}
 
@@ -109,13 +109,13 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 			masterPayloadFileName = "./payload.json"
 		}
 
-		log.Println("Input minimal payload : ", payloadString)
+		log.Println("[DEBG] Input minimal payload : ", payloadString)
 
 		payloadMinimal := make(map[string]interface{})
 		json.Unmarshal([]byte(payloadString), &payloadMinimal)
 
 		masterPayload := GetMasterPayloadApplyingMinimalPayload(masterPayloadFileName, payloadMinimal)
-		log.Println("masterPayload : ", masterPayload)
+		log.Println("[DEBG] masterPayload : ", masterPayload)
 
 		queryParams := make(map[string]string)
 		queryParams[constants.GW_SOURCE] = appviewxGwSource
@@ -154,22 +154,22 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 		if err != nil {
 			log.Fatalln(err)
 		} else {
-			log.Println("Request success : url :", url)
+			log.Println("[DEBG] Request success : url :", url)
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
 
 		downloadFilePath := d.Get(constants.DOWNLOAD_FILE_PATH).(string)
 		if downloadFilePath != "" {
-			log.Println("downloadFilePath : ", downloadFilePath)
+			log.Println("[DEBG] downloadFilePath : ", downloadFilePath)
 			ioutil.WriteFile(downloadFilePath, body, 0777)
 		} else {
-			log.Println("downloadFilePath is empty")
+			log.Println("[DEBG] downloadFilePath is empty")
 		}
 
 		log.Println(string(body))
 
-		log.Println("API ionvoke success")
+		log.Println("[DEBG] API ionvoke success")
 		d.SetId(strconv.Itoa(rand.Int()))
 		return resourceCertificateServerRead(d, m)
 	}

@@ -12,18 +12,18 @@ import (
 )
 
 func printRequest(types, url string, headers map[string]interface{}, requestBody []byte) {
-	log.Println("***************** NEW HTTP REQUEST **********************")
-	log.Println("TYPE : ", types)
-	log.Println("URL : ", url)
-	log.Println("Headers : ", headers)
-	log.Println("Body : ", string(requestBody))
-	log.Println("*********************************************************")
+	log.Println("[DEBUG] ***************** NEW HTTP REQUEST **********************")
+	log.Println("[DEBUG] TYPE : ", types)
+	log.Println("[DEBUG] URL : ", url)
+	log.Println("[DEBUG] Headers : ", headers)
+	log.Println("[DEBUG] Body : ", string(requestBody))
+	log.Println("[DEBUG] *********************************************************")
 }
 
 //TODO: cleanup to be done
 func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appviewxEnvironmentPort, appviewxGwSource string, appviewxEnvironmentIsHTTPS bool) (output string, err error) {
 
-	log.Println("Request received for GetSession")
+	log.Println("[INFO] Request received for GetSession")
 
 	payload := make(map[string]interface{})
 
@@ -43,7 +43,7 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 	payloadContents, err := json.Marshal(payload)
 
 	if err != nil {
-		log.Println("Error in marshalling the ")
+		log.Println("[ERROR] Error in marshalling the ")
 	}
 	payloadContentsReader := bytes.NewReader(payloadContents)
 
@@ -52,7 +52,7 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 	client := &http.Client{Transport: HTTPTransport()}
 	req, err := http.NewRequest(constants.POST, url, payloadContentsReader)
 	if err != nil {
-		log.Println("Error in creating the new reqeust")
+		log.Println("[ERROR] Error in creating the new reqeust")
 		return "", err
 	}
 
@@ -64,7 +64,7 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("Error in executing the request")
+		log.Println("[ERROR] Error in executing the request")
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -72,7 +72,7 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 
 	err = ioutil.WriteFile("/tmp/output_session.json", responseContents, 0666)
 	if err != nil {
-		fmt.Println("Error in writing the session output to file")
+		log.Println("[ERROR] Error in writing the session output to file")
 		return "", err
 	}
 
@@ -85,7 +85,7 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 			output = responseMap[constants.SESSION_ID].(string)
 		}
 	}
-	log.Println("session retrieval success ")
+	log.Println("[INFO] session retrieval success ")
 
 	return
 }

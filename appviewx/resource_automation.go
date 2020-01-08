@@ -53,19 +53,19 @@ func ResourceAutomationServer() *schema.Resource {
 }
 
 func resourceAutomationServerRead(d *schema.ResourceData, m interface{}) error {
-	log.Println(" **************** GET OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
+	log.Println("[INFO] **************** GET OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
 	// Since the resource is for stateless operation, only nil returned
 	return nil
 }
 
 func resourceAutomationServerUpdate(d *schema.ResourceData, m interface{}) error {
-	log.Println(" **************** UPDATE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
+	log.Println("[INFO]  **************** UPDATE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
 	//Update implementation is empty since this resource is for the stateless generic api invocation
 	return errors.New("Update not supported")
 }
 
 func resourceAutomationServerDelete(d *schema.ResourceData, m interface{}) error {
-	log.Println(" **************** DELETE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
+	log.Println("[INFO]  **************** DELETE OPERATION NOT SUPPORTED FOR THIS RESOURCE **************** ")
 	// Delete implementation is empty since this resoruce is for the stateless generic api invocation
 	return nil
 }
@@ -77,10 +77,10 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 
 	//
 	configAppViewXEnvironmentContent, _ := json.Marshal(configAppViewXEnvironment)
-	log.Println("configAppViewXEnvironmentContent : ", string(configAppViewXEnvironmentContent))
+	log.Println("[DEBUG] configAppViewXEnvironmentContent : ", string(configAppViewXEnvironmentContent))
 	//
 
-	log.Println("*********************** Request received to create")
+	log.Println("[DEBUG] *********************** Request received to create")
 	appviewxUserName := configAppViewXEnvironment.AppViewXUserName
 	appviewxPassword := configAppViewXEnvironment.AppViewXPassword
 	appviewxEnvironmentIP := configAppViewXEnvironment.AppViewXEnvironmentIP
@@ -90,7 +90,7 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 
 	appviewxSessionID, err := GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appviewxEnvironmentPort, appviewxGwSource, appviewxEnvironmentIsHTTPS)
 	if err != nil {
-		log.Println("Error in getting the session : ", err)
+		log.Println("[ERROR] Error in getting the session : ", err)
 		return err
 	}
 
@@ -104,13 +104,13 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 		masterPayloadFileName = "./payload.json"
 	}
 
-	log.Println("Input minimal payload : ", payloadString)
+	log.Println("[DEBUG] Input minimal payload : ", payloadString)
 
 	payloadMinimal := make(map[string]interface{})
 	json.Unmarshal([]byte(payloadString), &payloadMinimal)
 
 	masterPayload := GetMasterPayloadApplyingMinimalPayload(masterPayloadFileName, payloadMinimal)
-	log.Println("masterPayload : ", masterPayload)
+	log.Println("[DEBUG] masterPayload : ", masterPayload)
 
 	queryParams := make(map[string]string)
 	queryParams[constants.GW_SOURCE] = appviewxGwSource
@@ -149,7 +149,7 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 	if err != nil {
 		log.Fatalln(err)
 	} else {
-		log.Println("Request success : url :", url)
+		log.Println("[DEBUG] Request success : url :", url)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
@@ -159,12 +159,12 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 		log.Println("downloadFilePath : ", downloadFilePath)
 		ioutil.WriteFile(downloadFilePath, body, 0777)
 	} else {
-		log.Println("downloadFilePath is empty")
+		log.Println("[DEBUG] downloadFilePath is empty")
 	}
 
 	log.Println(string(body))
 
-	log.Println("API ionvoke success")
+	log.Println("[DEBUG] API ionvoke success")
 	d.SetId(strconv.Itoa(rand.Int()))
 	return resourceAutomationServerRead(d, m)
 	return nil

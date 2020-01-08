@@ -44,6 +44,10 @@ func ResourceAutomationServer() *schema.Resource {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
+			constants.DOWNLOAD_FILE_PATH: &schema.Schema{
+				Type:     schema.TypeString,
+				Optional: true,
+			},
 		},
 	}
 }
@@ -149,6 +153,15 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+
+	downloadFilePath := d.Get(constants.DOWNLOAD_FILE_PATH).(string)
+	if downloadFilePath != "" {
+		log.Println("downloadFilePath : ", downloadFilePath)
+		ioutil.WriteFile(downloadFilePath, body, 0777)
+	} else {
+		log.Println("downloadFilePath is empty")
+	}
+
 	log.Println(string(body))
 
 	log.Println("API ionvoke success")

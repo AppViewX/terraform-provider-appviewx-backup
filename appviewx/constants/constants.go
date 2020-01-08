@@ -9,6 +9,7 @@ const (
 	APPVIEWX_ACTION_ID            = "action_id"
 	MASTER_PAYLOAD                = "master_payload"
 	QUERY_PARAMS                  = "query_params"
+	DOWNLOAD_FILE_PATH            = "download_file_path"
 
 	ACCEPT   = "Accept"
 	USERNAME = "username"

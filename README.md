@@ -21,15 +21,3 @@ Need to build the plugin with 'terraform-provider-' as prefix
 ```
 
 >> provider name should be 'appviewx' if the plugin name is 'terraform-provider-appviewx'
-
-
-
----
-Other commands
----
->> go build -o terraform-provider-appviewx ; cp ./terraform-provider-appviewx ./op
->> rm terraform.tfstate ; terraform init; terraform apply 
----
-
-
-> config.json should be updated with the target appviewx environment

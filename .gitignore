@@ -3,3 +3,4 @@
 **/backup/*
 **/op/*
 **/example_files/*
+**/.terraform/*

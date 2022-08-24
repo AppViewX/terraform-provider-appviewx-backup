@@ -25,7 +25,7 @@ const (
 	PAYLOAD          = "payload"
 	TYPE             = "type"
 
-	APPVIEWX_ACTION_ID_LOGIN = "acctmgmt-perform-login"
+	APPVIEWX_ACTION_ID_LOGIN = "login"
 
 	POST   = "POST"
 	PUT    = "PUT"

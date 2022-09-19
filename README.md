@@ -1,6 +1,6 @@
 >COMMANDS
 
->> Build
+> Build
 ```
 > cd ../terraform-provider-appviewx
 > go build -o terraform-provider-appviewx
@@ -9,14 +9,14 @@ Need to build the plugin with 'terraform-provider-' as prefix
 
 ```
 
->> provider name should be 'appviewx' if the plugin name is 'terraform-provider-appviewx'
+> provider name should be 'appviewx' if the plugin name is 'terraform-provider-appviewx'
 
->> to enable logs  ( TRACE, DEBUG, INFO, WARN or ERROR )
+> to enable logs  ( TRACE, DEBUG, INFO, WARN or ERROR )
 ```
 	export TF_LOG=TRACE
 ```
 
->> Sample .tf file
+> Sample .tf file
 ```
 terraform {
   required_providers {
@@ -61,26 +61,26 @@ EOF
 action_id= "visualworkflow-submit-request"
 
   }
-
 ```
 
->> Keep the .tf file in the current folder
+> Keep the .tf file in the current folder
 
->> keep the "terraform-provider-appviewx" binary file under "~/.terraform.d/plugins/appviewx.com/provider/appviewx/0.2/linux_386"   ( linux_386 is sample, need to change based on the installation system architecture )
+> keep the "terraform-provider-appviewx" binary file under "~/.terraform.d/plugins/appviewx.com/provider/appviewx/0.2/linux_386"   ( linux_386 is sample, need to change based on the installation system architecture )
 
->> Run the following commands, to reset and trigger the request
+> Run the following commands, to reset and trigger the request
 ```
 	rm -rf ./terraform.tfstate;
 	terraform init;
 	terraform apply;
 ```
->>	terraform init  
-'''
+
+>	terraform init  
+```
 	To initialize the terraform with the given plugin and validate the .tf files
 	( ensure the plugin and .tf or .tf.json files placed in the current folder path )
-'''
+```
 
->> terraform apply
+> terraform apply
 ```
 	To analyze the local, remote state and carryout the required actions based on the given .tf or .tf.json files
 ```

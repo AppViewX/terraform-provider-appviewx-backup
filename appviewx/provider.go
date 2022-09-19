@@ -1,10 +1,10 @@
 package appviewx
 
 import (
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 	"terraform-provider-appviewx/appviewx/config"
 	"terraform-provider-appviewx/appviewx/constants"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func Provider() *schema.Provider {

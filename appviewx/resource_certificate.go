@@ -11,10 +11,11 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+
 	"terraform-provider-appviewx/appviewx/config"
 	"terraform-provider-appviewx/appviewx/constants"
-
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
 func ResourceCertificateServer() *schema.Resource {

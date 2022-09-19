@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
 	"terraform-provider-appviewx/appviewx/constants"
 )
 
@@ -70,14 +71,12 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 	defer resp.Body.Close()
 	responseContents, err := ioutil.ReadAll(resp.Body)
 
-	err = ioutil.WriteFile("/tmp/output_session.json", responseContents, 0666)
+	map1 := make(map[string]interface{})
+	err = json.Unmarshal(responseContents, &map1)
 	if err != nil {
-		log.Println("[ERROR] Error in writing the session output to file")
+		log.Println("[ERROR] Error in Unmarshalling the responseContents", err)
 		return "", err
 	}
-
-	map1 := make(map[string]interface{})
-	json.Unmarshal(responseContents, &map1)
 
 	if map1[constants.RESPONSE] != nil {
 		responseMap := map1[constants.RESPONSE].(map[string]interface{})

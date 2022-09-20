@@ -16,13 +16,20 @@ func printRequest(types, url string, headers map[string]interface{}, requestBody
 	log.Println("[DEBUG] ***************** NEW HTTP REQUEST **********************")
 	log.Println("[DEBUG] TYPE : ", types)
 	log.Println("[DEBUG] URL : ", url)
-	log.Println("[DEBUG] Headers : ", headers)
+	// log.Println("[DEBUG] Headers : ", headers)
 	log.Println("[DEBUG] Body : ", string(requestBody))
 	log.Println("[DEBUG] *********************************************************")
 }
 
 //TODO: cleanup to be done
-func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appviewxEnvironmentPort, appviewxGwSource string, appviewxEnvironmentIsHTTPS bool) (output string, err error) {
+func GetSession(
+	appviewxUserName,
+	appviewxPassword,
+	appviewxEnvironmentIP,
+	appviewxEnvironmentPort,
+	appviewxGwSource string,
+	appviewxEnvironmentIsHTTPS bool,
+) (output string, err error) {
 
 	log.Println("[INFO] Request received for GetSession")
 
@@ -42,10 +49,11 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 	url := GetURL(appviewxEnvironmentIP, appviewxEnvironmentPort, actionID, queryParams, appviewxEnvironmentIsHTTPS)
 
 	payloadContents, err := json.Marshal(payload)
-
 	if err != nil {
-		log.Println("[ERROR] Error in marshalling the ")
+		log.Println("[ERROR] Error in marshalling the payload", payload, err)
+		return "", err
 	}
+
 	payloadContentsReader := bytes.NewReader(payloadContents)
 
 	printRequest(constants.POST, url, headers, payloadContents)
@@ -53,7 +61,7 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 	client := &http.Client{Transport: HTTPTransport()}
 	req, err := http.NewRequest(constants.POST, url, payloadContentsReader)
 	if err != nil {
-		log.Println("[ERROR] Error in creating the new reqeust")
+		log.Println("[ERROR] Error in creating the new reqeust", err)
 		return "", err
 	}
 
@@ -65,11 +73,15 @@ func GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appvi
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Println("[ERROR] Error in executing the request")
+		log.Println("[ERROR] Error in executing the request", err)
 		return "", err
 	}
 	defer resp.Body.Close()
 	responseContents, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("[ERROR] error in reading the response body", err)
+		return "", err
+	}
 
 	map1 := make(map[string]interface{})
 	err = json.Unmarshal(responseContents, &map1)

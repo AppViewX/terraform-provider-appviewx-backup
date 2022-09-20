@@ -25,27 +25,27 @@ func ResourceAutomationServer() *schema.Resource {
 		Delete: resourceAutomationServerDelete,
 
 		Schema: map[string]*schema.Schema{
-			constants.APPVIEWX_ACTION_ID: &schema.Schema{
+			constants.APPVIEWX_ACTION_ID: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			constants.PAYLOAD: &schema.Schema{
+			constants.PAYLOAD: {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			constants.HEADERS: &schema.Schema{
+			constants.HEADERS: {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
-			constants.MASTER_PAYLOAD: &schema.Schema{
+			constants.MASTER_PAYLOAD: {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			constants.QUERY_PARAMS: &schema.Schema{
+			constants.QUERY_PARAMS: {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
-			constants.DOWNLOAD_FILE_PATH: &schema.Schema{
+			constants.DOWNLOAD_FILE_PATH: {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -76,11 +76,6 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 
 	configAppViewXEnvironment := m.(*config.AppViewXEnvironment)
 
-	//
-	configAppViewXEnvironmentContent, _ := json.Marshal(configAppViewXEnvironment)
-	log.Println("[DEBUG] configAppViewXEnvironmentContent : ", string(configAppViewXEnvironmentContent))
-	//
-
 	log.Println("[DEBUG] *********************** Request received to create")
 	appviewxUserName := configAppViewXEnvironment.AppViewXUserName
 	appviewxPassword := configAppViewXEnvironment.AppViewXPassword
@@ -89,7 +84,12 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 	appviewxEnvironmentIsHTTPS := configAppViewXEnvironment.AppViewXIsHTTPS
 	appviewxGwSource := "WEB"
 
-	appviewxSessionID, err := GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appviewxEnvironmentPort, appviewxGwSource, appviewxEnvironmentIsHTTPS)
+	appviewxSessionID, err := GetSession(appviewxUserName,
+		appviewxPassword,
+		appviewxEnvironmentIP,
+		appviewxEnvironmentPort,
+		appviewxGwSource,
+		appviewxEnvironmentIsHTTPS)
 	if err != nil {
 		log.Println("[ERROR] Error in getting the session : ", err)
 		return err
@@ -108,7 +108,11 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 	log.Println("[DEBUG] Input minimal payload : ", payloadString)
 
 	payloadMinimal := make(map[string]interface{})
-	json.Unmarshal([]byte(payloadString), &payloadMinimal)
+	err = json.Unmarshal([]byte(payloadString), &payloadMinimal)
+	if err != nil {
+		log.Println("[ERROR] error in unmarshalling the payloadString", payloadString)
+		return err
+	}
 
 	masterPayload := GetMasterPayloadApplyingMinimalPayload(masterPayloadFileName, payloadMinimal)
 	log.Println("[DEBUG] masterPayload : ", masterPayload)
@@ -130,13 +134,18 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 	}
 
 	client := &http.Client{Transport: HTTPTransport()}
-	requestBody, _ := json.Marshal(masterPayload)
+	requestBody, err := json.Marshal(masterPayload)
+	if err != nil {
+		log.Println("[ERROR] error in Marshalling the masterPayload", masterPayload, err)
+		return err
+	}
 
 	printRequest(types, url, headers, requestBody)
 
 	req, err := http.NewRequest(types, url, bytes.NewBuffer(requestBody))
 	if err != nil {
-		log.Fatalln(err)
+		log.Println("[ERROR] error in creating the new request ", err)
+		return err
 	}
 
 	for key, value := range headers {
@@ -148,17 +157,26 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println("[ERROR] error in making http request", err)
+		return err
 	} else {
 		log.Println("[DEBUG] Request success : url :", url)
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Println("[ERROR] error in Reading the body", err)
+		return err
+	}
 
 	downloadFilePath := d.Get(constants.DOWNLOAD_FILE_PATH).(string)
 	if downloadFilePath != "" {
 		log.Println("downloadFilePath : ", downloadFilePath)
-		ioutil.WriteFile(downloadFilePath, body, 0777)
+		err = ioutil.WriteFile(downloadFilePath, body, 0777)
+		if err != nil {
+			log.Println("[ERROR] error in writing the contents to file", err)
+			return err
+		}
 	} else {
 		log.Println("[DEBUG] downloadFilePath is empty")
 	}
@@ -168,5 +186,4 @@ func resourceAutomationServerCreate(d *schema.ResourceData, m interface{}) error
 	log.Println("[DEBUG] API ionvoke success")
 	d.SetId(strconv.Itoa(rand.Int()))
 	return resourceAutomationServerRead(d, m)
-	return nil
 }

@@ -26,31 +26,31 @@ func ResourceCertificateServer() *schema.Resource {
 		Delete: resourceCertificateServerDelete,
 
 		Schema: map[string]*schema.Schema{
-			constants.APPVIEWX_ACTION_ID: &schema.Schema{
+			constants.APPVIEWX_ACTION_ID: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			constants.PAYLOAD: &schema.Schema{
+			constants.PAYLOAD: {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			constants.TYPE: &schema.Schema{
+			constants.TYPE: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			constants.HEADERS: &schema.Schema{
+			constants.HEADERS: {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
-			constants.MASTER_PAYLOAD: &schema.Schema{
+			constants.MASTER_PAYLOAD: {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
-			constants.QUERY_PARAMS: &schema.Schema{
+			constants.QUERY_PARAMS: {
 				Type:     schema.TypeMap,
 				Optional: true,
 			},
-			constants.DOWNLOAD_FILE_PATH: &schema.Schema{
+			constants.DOWNLOAD_FILE_PATH: {
 				Type:     schema.TypeString,
 				Optional: true,
 			},
@@ -80,11 +80,6 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 
 	configAppViewXEnvironment := m.(*config.AppViewXEnvironment)
 
-	//
-	configAppViewXEnvironmentContent, _ := json.Marshal(configAppViewXEnvironment)
-	log.Println("[DEBUG] configAppViewXEnvironmentContent : ", string(configAppViewXEnvironmentContent))
-	//
-
 	log.Println("[INFO] *********************** Request received to create")
 	appviewxUserName := configAppViewXEnvironment.AppViewXUserName
 	appviewxPassword := configAppViewXEnvironment.AppViewXPassword
@@ -93,7 +88,11 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 	appviewxEnvironmentIsHTTPS := configAppViewXEnvironment.AppViewXIsHTTPS
 	appviewxGwSource := "WEB"
 
-	appviewxSessionID, err := GetSession(appviewxUserName, appviewxPassword, appviewxEnvironmentIP, appviewxEnvironmentPort, appviewxGwSource, appviewxEnvironmentIsHTTPS)
+	appviewxSessionID, err := GetSession(appviewxUserName,
+		appviewxPassword,
+		appviewxEnvironmentIP,
+		appviewxEnvironmentPort,
+		appviewxGwSource, appviewxEnvironmentIsHTTPS)
 	if err != nil {
 		log.Println("[ERROR] Error in getting the session : ", err)
 		return err
@@ -113,7 +112,11 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 		log.Println("[DEBG] Input minimal payload : ", payloadString)
 
 		payloadMinimal := make(map[string]interface{})
-		json.Unmarshal([]byte(payloadString), &payloadMinimal)
+		err = json.Unmarshal([]byte(payloadString), &payloadMinimal)
+		if err != nil {
+			log.Println("[ERROR] error in unmarshalling the payloadString", payloadString, err)
+			return err
+		}
 
 		masterPayload := GetMasterPayloadApplyingMinimalPayload(masterPayloadFileName, payloadMinimal)
 		log.Println("[DEBG] masterPayload : ", masterPayload)
@@ -135,13 +138,18 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 		}
 
 		client := &http.Client{Transport: HTTPTransport()}
-		requestBody, _ := json.Marshal(masterPayload)
+		requestBody, err := json.Marshal(masterPayload)
+		if err != nil {
+			log.Println("[ERROR] error in Marshalling the payload ", masterPayload, err)
+			return err
+		}
 
 		printRequest(types, url, headers, requestBody)
 
 		req, err := http.NewRequest(types, url, bytes.NewBuffer(requestBody))
 		if err != nil {
-			log.Fatalln(err)
+			log.Println("[ERROR] error in creating new Request", err)
+			return err
 		}
 
 		for key, value := range headers {
@@ -153,17 +161,26 @@ func resourceCertificateServerCreate(d *schema.ResourceData, m interface{}) erro
 
 		resp, err := client.Do(req)
 		if err != nil {
-			log.Fatalln(err)
+			log.Println("[ERROR] error in http request", err)
+			return err
 		} else {
 			log.Println("[DEBG] Request success : url :", url)
 		}
 		defer resp.Body.Close()
 		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			log.Println("[ERROR] error in reading the response Body", err)
+			return err
+		}
 
 		downloadFilePath := d.Get(constants.DOWNLOAD_FILE_PATH).(string)
 		if downloadFilePath != "" {
 			log.Println("[DEBG] downloadFilePath : ", downloadFilePath)
-			ioutil.WriteFile(downloadFilePath, body, 0777)
+			err = ioutil.WriteFile(downloadFilePath, body, 0777)
+			if err != nil {
+				log.Println("[ERROR] error in writing the contents to file", err)
+				return err
+			}
 		} else {
 			log.Println("[DEBG] downloadFilePath is empty")
 		}

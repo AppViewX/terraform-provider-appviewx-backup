@@ -10,23 +10,23 @@ import (
 func Provider() *schema.Provider {
 	return &schema.Provider{
 		Schema: map[string]*schema.Schema{
-			constants.APPVIEWX_USERNAME: &schema.Schema{
+			constants.APPVIEWX_USERNAME: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			constants.APPVIEWX_PASSWORD: &schema.Schema{
+			constants.APPVIEWX_PASSWORD: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			constants.APPVIEWX_ENVIRONMENT_IP: &schema.Schema{
+			constants.APPVIEWX_ENVIRONMENT_IP: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			constants.APPVIEWX_ENVIRONMENT_PORT: &schema.Schema{
+			constants.APPVIEWX_ENVIRONMENT_PORT: {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			constants.APPVIEWX_ENVIRONMENT_Is_HTTPS: &schema.Schema{
+			constants.APPVIEWX_ENVIRONMENT_Is_HTTPS: {
 				Type:     schema.TypeBool,
 				Required: true,
 			},

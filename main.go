@@ -11,7 +11,7 @@ import (
 
 var (
 	version     string = "0.2.0"
-	releaseDate string = "Sep 20 2022"
+	releaseDate string = "Sep 22 2022"
 )
 
 func init() {

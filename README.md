@@ -25,11 +25,11 @@ terraform {
 ## Sample ' appviewx.tf'  file
 ```
 provider "appviewx"{
-  appviewx_username="admin"
-	appviewx_password="AppViewX@123"
+  appviewx_username="USER_NAME"
+	appviewx_password="PASSWORD"
 	appviewx_environment_is_https=true 
-	appviewx_environment_ip="192.168.220.129"
-	appviewx_environment_port="31443"
+	appviewx_environment_ip="APPVIEWX_HOST_NAME"
+	appviewx_environment_port="APPVIEWX_PORT_NUMBER"
 }
 
 resource "appviewx_automation" "newcert"{
